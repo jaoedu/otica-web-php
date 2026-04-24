@@ -62,6 +62,11 @@
         <h2>Total: R$ {{ number_format($total, 2, ',', '.') }}</h2>
     </div>
 
+    <form method="POST" action="{{ route('checkout') }}">
+   @csrf
+   <button class="btn-primary">Finalizar compra</button>
+</form>
+
 </main>
 
 </body>
