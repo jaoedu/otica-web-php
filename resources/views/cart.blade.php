@@ -1,73 +1,143 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <title>Carrinho</title>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-</head>
-<body class="home-page">
+@extends('layouts.app')
 
-<header class="home-header">
-    <h1>Seu Carrinho</h1>
-    <a href="{{ route('home') }}">Voltar para loja</a>
-</header>
+@section('title', 'Carrinho')
 
-<main class="dashboard-container">
+@section('content')
 
-    @forelse($items as $item)
-        @php
-            $subtotal = $item->product->price * $item->quantity;
-        @endphp
+<div class="cart-page">
 
-        <div class="dashboard-card">
-            <h2>{{ $item->product->name }}</h2>
+    <div class="cart-container">
 
-            <p>
-                Preço: R$ {{ number_format($item->product->price, 2, ',', '.') }}
-            </p>
+        <h1 class="cart-title">
+            Seu Carrinho
+        </h1>
 
-            <p>
-                Subtotal: R$ {{ number_format($subtotal, 2, ',', '.') }}
-            </p>
+        <div class="cart-grid">
 
-            <div style="display: flex; gap: 10px; align-items: center;">
-                <form method="POST" action="{{ route('cart.decrease', ['id' => $item->id]) }}">
-                    @csrf
-                    <button type="submit">-</button>
-                </form>
+            <div class="cart-card">
 
-                <strong>{{ $item->quantity }}</strong>
+                @forelse($items as $item)
+                    @php
+                        $subtotal = $item->product->price * $item->quantity;
+                    @endphp
 
-                <form method="POST" action="{{ route('cart.increase', ['id' => $item->id]) }}">
-                    @csrf
-                    <button type="submit">+</button>
-                </form>
+                    <div class="cart-item">
+
+                        @if($item->product->image)
+                            <img
+                                src="{{ asset('storage/' . $item->product->image) }}"
+                                alt="{{ $item->product->name }}"
+                            >
+                        @endif
+
+                        <div>
+                            <h3>{{ $item->product->name }}</h3>
+
+                            <p>
+                                Preço:
+                                R$
+                                {{ number_format($item->product->price, 2, ',', '.') }}
+                            </p>
+
+                            <div class="quantity-box">
+
+                                <form
+                                    method="POST"
+                                    action="{{ route('cart.decrease', $item->id) }}"
+                                >
+                                    @csrf
+                                    <button
+                                        type="submit"
+                                        class="qty-btn"
+                                    >
+                                        -
+                                    </button>
+                                </form>
+
+                                <span>
+                                    {{ $item->quantity }}
+                                </span>
+
+                                <form
+                                    method="POST"
+                                    action="{{ route('cart.increase', $item->id) }}"
+                                >
+                                    @csrf
+                                    <button
+                                        type="submit"
+                                        class="qty-btn"
+                                    >
+                                        +
+                                    </button>
+                                </form>
+
+                            </div>
+
+                            <form
+                                method="POST"
+                                action="{{ route('cart.remove', $item->id) }}"
+                                style="margin-top:14px;"
+                            >
+                                @csrf
+                                @method('DELETE')
+
+                                <button
+                                    type="submit"
+                                    class="btn-small danger"
+                                >
+                                    Remover
+                                </button>
+                            </form>
+                        </div>
+
+                        <div class="item-price">
+                            R$
+                            {{ number_format($subtotal, 2, ',', '.') }}
+                        </div>
+
+                    </div>
+
+                @empty
+
+                    <p>
+                        Seu carrinho está vazio.
+                    </p>
+
+                @endforelse
+
             </div>
 
-            <form method="POST" action="{{ route('cart.remove', ['id' => $item->id]) }}" style="margin-top: 15px;">
-                @csrf
-                @method('DELETE')
-                <button type="submit" class="btn-outline">Remover</button>
-            </form>
+            <div class="cart-summary">
+
+                <h2>Resumo</h2>
+
+                <div class="summary-row">
+                    <span>Itens</span>
+                    <strong>{{ $items->count() }}</strong>
+                </div>
+
+                <div class="summary-total">
+                    <span>Total</span>
+                    <strong>
+                        R$
+                        {{ number_format($total, 2, ',', '.') }}
+                    </strong>
+                </div>
+
+                <a
+                    href="{{ route('checkout') }}"
+                    class="btn-primary"
+                    style="display:block;text-align:center;"
+                >
+                    Finalizar compra
+                </a>
+
+            </div>
+
         </div>
 
-    @empty
-        <div class="dashboard-card">
-            <h2>Carrinho vazio</h2>
-            <p>Adicione produtos para continuar.</p>
-        </div>
-    @endforelse
-
-    <div class="dashboard-card">
-        <h2>Total: R$ {{ number_format($total, 2, ',', '.') }}</h2>
     </div>
 
-    <form method="POST" action="{{ route('checkout') }}">
-   @csrf
-   <button class="btn-primary">Finalizar compra</button>
-</form>
+</div>
 
-</main>
-
-</body>
-</html>
+@endsection

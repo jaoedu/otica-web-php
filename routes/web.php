@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\PrescriptionController;
 
 // Admin
 use App\Http\Controllers\Admin\ProductController;
@@ -64,7 +65,6 @@ Route::middleware('auth')->group(function () {
 
         Route::post('/add/{id}', [CartController::class, 'add'])->name('add');
 
-        // ⚠️ GET aqui só pra facilitar agora (em produção use POST/PATCH)
         Route::get('/increase/{id}', [CartController::class, 'increase'])->name('increase');
         Route::get('/decrease/{id}', [CartController::class, 'decrease'])->name('decrease');
 
@@ -73,19 +73,36 @@ Route::middleware('auth')->group(function () {
 
     /*
     |--------------------------------------------------------------------------
-    | CHECKOUT (CRIAR PEDIDO)
+    | CHECKOUT
     |--------------------------------------------------------------------------
     */
-    Route::post('/checkout', [CheckoutController::class, 'checkout'])
+    Route::get('/checkout', [CheckoutController::class, 'index'])
         ->name('checkout');
+
+    Route::post('/checkout', [CheckoutController::class, 'process'])
+        ->name('checkout.process');
 
     /*
     |--------------------------------------------------------------------------
-    | HISTÓRICO DE PEDIDOS
+    | PEDIDOS
     |--------------------------------------------------------------------------
     */
     Route::get('/orders', [HomeController::class, 'orders'])
         ->name('orders');
+
+    /*
+    |--------------------------------------------------------------------------
+    | RECEITA
+    |--------------------------------------------------------------------------
+    */
+    Route::prefix('prescription')->name('prescription.')->group(function () {
+
+        Route::get('/{orderId}', [PrescriptionController::class, 'create'])
+            ->name('create');
+
+        Route::post('/{orderId}', [PrescriptionController::class, 'store'])
+            ->name('store');
+    });
 });
 
 /*
@@ -107,7 +124,7 @@ Route::middleware(['auth', 'admin'])
 
 /*
 |--------------------------------------------------------------------------
-| AUTH (Laravel Breeze / Jetstream)
+| AUTH
 |--------------------------------------------------------------------------
 */
 require __DIR__ . '/auth.php';
