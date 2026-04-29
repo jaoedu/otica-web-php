@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-
 use App\Models\Product;
 use App\Models\Order;
 
@@ -11,22 +11,41 @@ class HomeController extends Controller
 {
     /*
     |--------------------------------------------------------------------------
-    | HOME (LISTAGEM DE PRODUTOS)
+    | HOME
     |--------------------------------------------------------------------------
     */
-    public function index()
+    public function index(Request $request)
     {
-        $products = Product::with('activePromotion')
+        $search = $request->search;
+
+        $query = Product::with('activePromotion')
             ->where('is_active', true)
+            ->when($search, function ($query) use ($search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('name', 'ILIKE', "%{$search}%")
+                        ->orWhere('description', 'ILIKE', "%{$search}%");
+                });
+            });
+
+        $promotions = (clone $query)
+            ->whereHas('activePromotion')
             ->latest()
             ->get();
 
-        return view('home', compact('products'));
+        $products = (clone $query)
+            ->whereDoesntHave('activePromotion')
+            ->latest()
+            ->get();
+
+        return view('home', compact(
+            'promotions',
+            'products'
+        ));
     }
 
     /*
     |--------------------------------------------------------------------------
-    | HISTÓRICO DE PEDIDOS
+    | PEDIDOS
     |--------------------------------------------------------------------------
     */
     public function orders()

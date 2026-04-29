@@ -8,6 +8,10 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\PrescriptionController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\AddressController;
+use App\Http\Controllers\VisionProfileController;
+use App\Http\Controllers\WishlistController;
 
 // Admin
 use App\Http\Controllers\Admin\ProductController;
@@ -36,6 +40,29 @@ Route::middleware('auth')->group(function () {
     | REDIRECIONAMENTO INTELIGENTE (ADMIN OU USER)
     |--------------------------------------------------------------------------
     */
+
+
+    Route::get('/profile', [ProfileController::class, 'index'])
+        ->name('profile.index');
+
+    Route::put('/profile', [ProfileController::class, 'update'])
+        ->name('profile.update');
+
+    Route::post('/addresses', [AddressController::class, 'store'])
+        ->name('addresses.store');
+
+    Route::delete('/addresses/{address}', [AddressController::class, 'destroy'])
+        ->name('addresses.destroy');
+
+    Route::put('/vision-profile', [VisionProfileController::class, 'update'])
+        ->name('vision-profile.update');
+
+    Route::post('/wishlist/{product}', [WishlistController::class, 'toggle'])
+        ->name('wishlist.toggle');
+
+    Route::delete('/wishlist/{product}', [WishlistController::class, 'destroy'])
+        ->name('wishlist.destroy');
+
     Route::get('/dashboard', function () {
         $user = Auth::user();
 

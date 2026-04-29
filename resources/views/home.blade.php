@@ -4,10 +4,6 @@
 
 @section('content')
 
-<body class="home-page">
-
-
-
 <main class="home-container">
 
     @if(session('success'))
@@ -23,25 +19,30 @@
         </p>
     </section>
 
-    <section class="home-section">
-        <h2>Produtos</h2>
+    @if($promotions->isEmpty() && $products->isEmpty())
+        <div class="empty-state">
+            Nenhum produto encontrado.
+        </div>
+    @endif
 
-        <div class="product-grid">
+    @if($promotions->count())
+        <section class="home-section">
+            <h2>Promoções</h2>
 
-            @foreach($products as $product)
-                <div class="product-card">
+            <div class="product-grid">
 
-                    @if($product->image)
-                        <img
-                            src="{{ asset('storage/' . $product->image) }}"
-                            alt="{{ $product->name }}"
-                            class="product-image"
-                        >
-                    @endif
+                @foreach($promotions as $product)
+                    <div class="product-card promo-card">
 
-                    <h3>{{ $product->name }}</h3>
+                        @if($product->image)
+                            <img
+                                src="{{ asset('storage/' . $product->image) }}"
+                                alt="{{ $product->name }}"
+                                class="product-image"
+                            >
+                        @endif
 
-                    @if($product->activePromotion)
+                        <h3>{{ $product->name }}</h3>
 
                         <p class="old-price">
                             R$ {{ number_format($product->price, 2, ',', '.') }}
@@ -51,33 +52,74 @@
                             R$ {{ number_format($product->final_price, 2, ',', '.') }}
                         </p>
 
-                    @else
+                        <form method="POST" action="{{ route('cart.add', $product->id) }}">
+                            @csrf
+
+                            <button type="submit" class="btn-primary">
+                                Adicionar ao carrinho
+                            </button>
+                        </form>
+
+                        <form method="POST" action="{{ route('wishlist.toggle', $product->id) }}">
+                            @csrf
+
+                            <button type="submit" class="wishlist-button">
+                                ❤️ Salvar
+                            </button>
+                        </form>
+
+                    </div>
+                @endforeach
+
+            </div>
+        </section>
+    @endif
+
+    @if($products->count())
+        <section class="home-section">
+            <h2>Produtos</h2>
+
+            <div class="product-grid">
+
+                @foreach($products as $product)
+                    <div class="product-card">
+
+                        @if($product->image)
+                            <img
+                                src="{{ asset('storage/' . $product->image) }}"
+                                alt="{{ $product->name }}"
+                                class="product-image"
+                            >
+                        @endif
+
+                        <h3>{{ $product->name }}</h3>
 
                         <p class="price">
                             R$ {{ number_format($product->price, 2, ',', '.') }}
                         </p>
 
-                    @endif
+                        <form method="POST" action="{{ route('cart.add', $product->id) }}">
+                            @csrf
 
-                    <form
-                        method="POST"
-                        action="{{ route('cart.add', $product->id) }}"
-                    >
-                        @csrf
+                            <button type="submit" class="btn-primary">
+                                Adicionar ao carrinho
+                            </button>
+                        </form>
 
-                        <button
-                            type="submit"
-                            class="btn-primary"
-                        >
-                            Adicionar ao carrinho
-                        </button>
-                    </form>
+                        <form method="POST" action="{{ route('wishlist.toggle', $product->id) }}">
+                            @csrf
 
-                </div>
-            @endforeach
+                            <button type="submit" class="wishlist-button">
+                                ❤️ Salvar
+                            </button>
+                        </form>
 
-        </div>
-    </section>
+                    </div>
+                @endforeach
+
+            </div>
+        </section>
+    @endif
 
 </main>
 

@@ -9,9 +9,15 @@
             Ótica Márcia
         </a>
 
-        <form class="site-search">
+        <form
+            method="GET"
+            action="{{ route('home') }}"
+            class="site-search"
+        >
             <input
                 type="text"
+                name="search"
+                value="{{ request('search') }}"
                 placeholder="Buscar produtos..."
             >
 
@@ -32,6 +38,12 @@
 
             <a href="{{ route('orders') }}">
                 Pedidos
+            </a>
+
+            <a href="{{ route('profile.index') }}
+
+            ">Perfil
+
             </a>
 
             <span class="header-user">

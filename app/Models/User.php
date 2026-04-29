@@ -15,6 +15,10 @@ class User extends Authenticatable
         'email',
         'password',
         'is_admin',
+        'phone',
+        'cpf',
+        'birth_date',
+        'avatar',
     ];
 
     protected $hidden = [
@@ -29,5 +33,25 @@ class User extends Authenticatable
             'password' => 'hashed',
             'is_admin' => 'boolean',
         ];
+    }
+
+    public function addresses()
+    {
+        return $this->hasMany(Address::class);
+    }
+
+    public function visionProfile()
+    {
+        return $this->hasOne(VisionProfile::class);
+    }
+
+    public function wishlist()
+    {
+        return $this->belongsToMany(Product::class, 'wishlists');
+    }
+
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
     }
 }

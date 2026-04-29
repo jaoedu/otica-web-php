@@ -212,22 +212,22 @@
 
 /* BADGE */
 
-.product-card::before {
-    content: "Destaque";
-    position: absolute;
-    top: 14px;
-    left: 14px;
-    z-index: 2;
+.promo-card::before{
+    content:"Promoção";
+    position:absolute;
+    top:14px;
+    left:14px;
+    z-index:2;
 
-    padding: 6px 12px;
-    border-radius: 999px;
+    padding:6px 12px;
+    border-radius:999px;
 
-    background: #111827;
-    color: white;
+    background:#b12704;
+    color:white;
 
-    font-size: 11px;
-    font-weight: 800;
-    letter-spacing: .3px;
+    font-size:11px;
+    font-weight:800;
+    letter-spacing:.3px;
 }
 
 /* IMAGE */
@@ -312,4 +312,32 @@
     .home-banner h1 {
         font-size: 28px;
     }
+}
+
+.empty-state{
+    margin:40px 0;
+    padding:60px 30px;
+    border-radius:22px;
+    background:white;
+    text-align:center;
+    font-size:18px;
+    font-weight:700;
+    color:#6b7280;
+    box-shadow:0 6px 18px rgba(15,23,42,.04);
+}
+
+.wishlist-button {
+    width: 100%;
+    margin-top: 10px;
+    padding: 12px;
+    border-radius: 12px;
+    border: 1px solid #f4c400;
+    background: white;
+    cursor: pointer;
+    font-weight: 700;
+    transition: 0.2s;
+}
+
+.wishlist-button:hover {
+    background: #fff8d6;
 }
