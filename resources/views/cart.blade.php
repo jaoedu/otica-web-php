@@ -5,7 +5,6 @@
 @section('content')
 
 <div class="cart-page">
-
     <div class="cart-container">
 
         <h1 class="cart-title">
@@ -35,17 +34,19 @@
 
                             <p>
                                 Preço:
-                                R$
-                                {{ number_format($item->product->price, 2, ',', '.') }}
+                                R$ {{ number_format($item->product->price, 2, ',', '.') }}
                             </p>
 
                             <div class="quantity-box">
 
+                                {{-- diminuir --}}
                                 <form
                                     method="POST"
                                     action="{{ route('cart.decrease', $item->id) }}"
                                 >
                                     @csrf
+                                    @method('PATCH')
+
                                     <button
                                         type="submit"
                                         class="qty-btn"
@@ -58,11 +59,14 @@
                                     {{ $item->quantity }}
                                 </span>
 
+                                {{-- aumentar --}}
                                 <form
                                     method="POST"
                                     action="{{ route('cart.increase', $item->id) }}"
                                 >
                                     @csrf
+                                    @method('PATCH')
+
                                     <button
                                         type="submit"
                                         class="qty-btn"
@@ -73,6 +77,7 @@
 
                             </div>
 
+                            {{-- remover --}}
                             <form
                                 method="POST"
                                 action="{{ route('cart.remove', $item->id) }}"
@@ -88,21 +93,17 @@
                                     Remover
                                 </button>
                             </form>
+
                         </div>
 
                         <div class="item-price">
-                            R$
-                            {{ number_format($subtotal, 2, ',', '.') }}
+                            R$ {{ number_format($subtotal, 2, ',', '.') }}
                         </div>
 
                     </div>
 
                 @empty
-
-                    <p>
-                        Seu carrinho está vazio.
-                    </p>
-
+                    <p>Seu carrinho está vazio.</p>
                 @endforelse
 
             </div>
@@ -119,8 +120,7 @@
                 <div class="summary-total">
                     <span>Total</span>
                     <strong>
-                        R$
-                        {{ number_format($total, 2, ',', '.') }}
+                        R$ {{ number_format($total, 2, ',', '.') }}
                     </strong>
                 </div>
 
@@ -137,7 +137,6 @@
         </div>
 
     </div>
-
 </div>
 
 @endsection

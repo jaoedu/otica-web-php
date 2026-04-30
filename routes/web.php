@@ -88,14 +88,20 @@ Route::middleware('auth')->group(function () {
     */
     Route::prefix('cart')->name('cart.')->group(function () {
 
-        Route::get('/', [CartController::class, 'index'])->name('index');
+        Route::get('/', [CartController::class, 'index'])
+            ->name('index');
 
-        Route::post('/add/{id}', [CartController::class, 'add'])->name('add');
+        Route::post('/add/{id}', [CartController::class, 'add'])
+            ->name('add');
 
-        Route::get('/increase/{id}', [CartController::class, 'increase'])->name('increase');
-        Route::get('/decrease/{id}', [CartController::class, 'decrease'])->name('decrease');
+        Route::patch('/increase/{id}', [CartController::class, 'increase'])
+            ->name('increase');
 
-        Route::delete('/remove/{id}', [CartController::class, 'remove'])->name('remove');
+        Route::patch('/decrease/{id}', [CartController::class, 'decrease'])
+            ->name('decrease');
+
+        Route::delete('/remove/{id}', [CartController::class, 'remove'])
+            ->name('remove');
     });
 
     /*

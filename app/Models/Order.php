@@ -3,21 +3,33 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Order extends Model
 {
+    protected $fillable = [
+        'user_id',
+        'total',
+    ];
 
-    protected $table = 'orders';
-    
-    protected $fillable = ['user_id', 'total'];
-
-    public function items()
+    /*
+    |--------------------------------------------------------------------------
+    | RELACIONAMENTO COM USER
+    |--------------------------------------------------------------------------
+    */
+    public function user(): BelongsTo
     {
-        return $this->hasMany(OrderItem::class);
+        return $this->belongsTo(User::class);
     }
 
-    public function prescription()
+    /*
+    |--------------------------------------------------------------------------
+    | RELACIONAMENTO COM ITENS DO PEDIDO
+    |--------------------------------------------------------------------------
+    */
+    public function items(): HasMany
     {
-        return $this->hasOne(Prescription::class);
+        return $this->hasMany(OrderItem::class);
     }
 }
