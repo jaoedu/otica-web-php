@@ -4,7 +4,7 @@
 
 @section('content')
 
-<<div class="checkout-page">
+<div class="checkout-page">
 
     <div class="checkout-container">
 
