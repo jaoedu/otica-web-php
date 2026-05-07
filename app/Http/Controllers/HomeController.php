@@ -21,9 +21,11 @@ class HomeController extends Controller
         $query = Product::with('activePromotion')
             ->where('is_active', true)
             ->when($search, function ($query) use ($search) {
+                $search = strtolower($search);
+
                 $query->where(function ($q) use ($search) {
-                    $q->where('name', 'ILIKE', "%{$search}%")
-                        ->orWhere('description', 'ILIKE', "%{$search}%");
+                    $q->whereRaw('LOWER(name) LIKE ?', ["%{$search}%"])
+                        ->orWhereRaw('LOWER(description) LIKE ?', ["%{$search}%"]);
                 });
             });
 

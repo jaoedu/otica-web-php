@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Http\Requests\ProfileUpdateRequest;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\ValidationException;
 
 class ProfileController extends Controller
 {
@@ -19,17 +22,41 @@ class ProfileController extends Controller
         return view('profile.index', compact('user'));
     }
 
-    public function update(Request $request)
+    public function update(ProfileUpdateRequest $request): RedirectResponse
     {
-        $data = $request->validate([
-            'name' => 'required|string|max:255',
-            'phone' => 'nullable|string|max:20',
-            'cpf' => 'nullable|string|max:20',
-            'birth_date' => 'nullable|date',
-        ]);
+        $user = $request->user();
+        $data = $request->validated();
 
-        Auth::user()->update($data);
+        $user->fill($data);
 
-        return back()->with('success', 'Perfil atualizado com sucesso.');
+        if ($user->isDirty('email')) {
+            $user->email_verified_at = null;
+        }
+
+        $user->save();
+
+        return redirect()
+            ->route('profile.index')
+            ->with('success', 'Perfil atualizado com sucesso.');
+    }
+
+    public function destroy(): RedirectResponse
+    {
+        $user = Auth::user();
+
+        if (! Hash::check(request('password'), $user->password)) {
+            throw ValidationException::withMessages([
+                'password' => __('auth.password'),
+            ])->errorBag('userDeletion');
+        }
+
+        Auth::logout();
+
+        $user->delete();
+
+        request()->session()->invalidate();
+        request()->session()->regenerateToken();
+
+        return redirect('/');
     }
 }

@@ -16,6 +16,22 @@
             acompanhe o histórico das suas compras
         </p>
         @forelse($orders as $order)
+            @php
+                $statusLabels = [
+                    'pendente' => 'Pendente',
+                    'enviado' => 'Enviado',
+                    'finalizado' => 'Finalizado',
+                ];
+
+                $statusClasses = [
+                    'pendente' => 'processing',
+                    'enviado' => 'sent',
+                    'finalizado' => 'delivered',
+                ];
+
+                $statusClass = $statusClasses[$order->status] ?? 'processing';
+                $statusLabel = $statusLabels[$order->status] ?? ucfirst($order->status);
+            @endphp
 
             <div class="order-card">
 
@@ -36,8 +52,8 @@
                             R$ {{ number_format($order->total, 2, ',', '.') }}
                         </div>
 
-                        <span class="order-status delivered">
-                            Finalizado
+                        <span class="order-status {{ $statusClass }}">
+                            {{ $statusLabel }}
                         </span>
                     </div>
 
